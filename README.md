@@ -40,3 +40,30 @@ $ ./update
 ```
 $ npm install && npm run aws:fn-deplo
 ```
+
+
+Codebuild uses a `buildspec.yml` for example
+
+```YAML
+version: 0.1
+
+environment_variables:
+  plaintext:
+    SNS_TOPIC_ARN: arn:aws:sns:us-east-1:032177910376:pull-request-builder
+
+phases:
+  install:
+    commands:
+      - echo Nothing to do in the install phase...
+  pre_build:
+    commands:
+      - npm install
+  build:
+    commands:
+      - echo Build started on `date`
+      - npm test
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - ./sns.sh
+```
