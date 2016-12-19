@@ -1,0 +1,189 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: An AWS CloudFormation template
+
+Parameters:
+  GithubToken:
+    Description: Github api token
+    Type: String
+  ProjectName:
+    Description: Project name
+    Type: String
+
+Outputs:
+  AccessKeyId:
+    Value:
+      Ref: ReAccessKey
+    Description: The IAM AccessKeyId
+  SecretAccessKey:
+    Value:
+      Fn::GetAtt:
+      - ReAccessKey
+      - SecretAccessKey
+    Description: The IAM AccessSecretKey
+  SNSTopic:
+    Value:
+      Ref: ReTopic
+
+Resources:
+
+  ReInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+        - Ref: ReCodeBuildRole
+
+  ReCodeBuildRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - codebuild.us-east-1.amazonaws.com
+                - codebuild.us-west-2.amazonaws.com
+                - codebuild.eu-west-1.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: codebuild-policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource:
+                  - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/*
+              - Effect: Allow
+                Action:
+                  - sns:*
+                Resource:
+                  - Ref: ReTopic
+
+  ReCodeBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: pull-request-builder
+      Description: pull request buidler
+      ServiceRole: !GetAtt ReCodeBuildRole.Arn
+      Artifacts:
+        Type: no_artifacts
+      Environment:
+        Type: linuxContainer
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/nodejs:4.4.7
+      Source:
+        Location: https://github.com/tatums/aws-sam-example.git
+        Type: GITHUB
+      TimeoutInMinutes: 10
+
+  ReUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: !Sub ${AWS::StackName}-user
+      Path: "/"
+      Policies:
+      - PolicyName:
+          !Sub ${AWS::StackName}-policy
+        PolicyDocument:
+          Version: 2012-10-17
+          Statement:
+          - Action:
+            - sns:Publish
+            Effect: Allow
+            Resource:
+              Ref: ReTopic
+
+  ReAccessKey:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName:
+        Ref: ReUser
+
+  ReTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: !Sub ${AWS::StackName}
+      TopicName: !Sub ${AWS::StackName}
+      Subscription:
+      - Endpoint:
+          Fn::GetAtt:
+            - ReLambda
+            - Arn
+        Protocol: lambda
+
+  ReLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}
+      Handler: index.handler
+      Role: !GetAtt [IamRoleLambda, Arn]
+      Code:
+        ZipFile:
+          exports.handler = function(event, context, cb) { return cb(null, {message:'Hello World'}); };
+      Environment:
+        Variables:
+          GITHUB_TOKEN:
+            Ref: GithubToken
+          PROJECT_NAME:
+            Ref: ProjectName
+      Runtime: nodejs4.3
+      MemorySize: 1024
+      Timeout: 30
+
+  IamRoleLambda:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName:
+        !Sub ${AWS::StackName}-role-lambda
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+
+  IamPolicyLambda:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName:
+        !Sub ${AWS::StackName}-lambda
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+        - Effect: Allow
+          Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Resource:
+            !Sub arn:aws:logs:${AWS::Region}:*:*
+        - Effect: Allow
+          Action:
+          - codebuild:*
+          Resource: "*"
+      Roles:
+      - Ref: IamRoleLambda
+
+  ReLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      Principal: sns.amazonaws.com
+      SourceArn:
+        Ref: ReTopic
+      FunctionName:
+        Fn::GetAtt:
+        - ReLambda
+        - Arn

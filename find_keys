@@ -1,0 +1,13 @@
+
+# 1 gitrepo
+# 2 stackname
+# 3
+
+key=$(aws cloudformation describe-stacks --stack-name pull-request-builder --query 'Stacks[0].Outputs[?OutputKey==`AccessKeyId`] | [0].OutputValue' --output json | xargs echo)
+echo $key
+
+secret=$(aws cloudformation describe-stacks --stack-name pull-request-builder --query 'Stacks[0].Outputs[?OutputKey==`SecretAccessKey`] | [0].OutputValue' --output json | xargs echo)
+echo $secret
+
+arn=$(aws cloudformation describe-stacks --stack-name pull-request-builder --query 'Stacks[0].Outputs[?OutputKey==`SNSTopic`] | [0].OutputValue' --output json | xargs echo)
+echo $arn

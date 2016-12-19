@@ -1,0 +1,15 @@
+#!/bin/bash
+
+stack=$(cat stack-name)
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+aws cloudformation create-stack \
+      --stack-name $stack \
+      --parameters ParameterKey=GithubToken,ParameterValue=$GITHUB_TOKEN \
+                   ParameterKey=ProjectName,ParameterValue=$PROJECT_NAME \
+      --template-body file://$DIR/resources.yaml \
+      --capabilities CAPABILITY_IAM \
+      --capabilities CAPABILITY_NAMED_IAM && \
+
+      aws cloudformation wait stack-create-complete \
+        --stack-name $stack
