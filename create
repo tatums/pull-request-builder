@@ -1,6 +1,5 @@
 #!/bin/bash
 
-stack=$(cat stack-name)
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 aws cloudformation create-stack \
@@ -12,4 +11,4 @@ aws cloudformation create-stack \
       --capabilities CAPABILITY_NAMED_IAM && \
 
       aws cloudformation wait stack-create-complete \
-        --stack-name $stack
+        --stack-name $PROJECT_NAME
