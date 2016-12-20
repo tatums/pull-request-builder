@@ -29,15 +29,6 @@ $ export GITHUB_TOKEN='1234567890'
 $ export PROJECT_NAME='foo-bar'
 ```
 
-## Create the resources
-```
-$ ./create
-```
-
-## Update the resources
-```
-$ ./update
-```
 
 ## Deploy the lambda
 ```
