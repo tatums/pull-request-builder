@@ -2,16 +2,7 @@
 
 This will build out all the resources needed to use
 [AWS codebuild](https://aws.amazon.com/codebuild/) and integrate
-with a github to update the build result via githubs's status api.
-
-
-Resources created
-
-* CodeBuild Project
-* SNS Topic
-* Lambda
-* IAM user with keys
-
+with a github to make a pull request builder.
 
 When a commit is pushed to github.  Github sends a SNS message
 which then invokes the Lambda. The lambda will update github
@@ -22,25 +13,43 @@ Cloudformation will output the keys and SNS ARN needed for the
 github AWS SNS integration.
 
 
-## Setup ENV variables
+## Setup
+
+### Requirements
+
+#### ENV Varialbes
 
 ```
 $ export GITHUB_TOKEN='1234567890'
 $ export PROJECT_NAME='foo-bar'
 ```
+#### AWS Cli
 
+This relies on the aws cli.
 
-## Deploy the lambda
+#### Setup resources
+
+```bash
+$ ./resources/create
 ```
+
+This will create the following resources in AWS
+
+* CodeBuild Project
+* SNS Topic
+* Lambda
+* IAM user with keys (for the github integration)
+
+### Deploy the lambda
+```
+$ cd lambda
 $ npm install && npm run aws:fn-deplo
 ```
 
+### in your project you'll need to setup a `buildspec.yml` file.
 
-## example
+Notice that you'll need to trigger a SNS call in the post_build step.
 
-You'll need to trigger a SNS call in the post_build step.
-
-`buildspec.yml`
 
 ```YAML
 version: 0.1
