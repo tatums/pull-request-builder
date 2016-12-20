@@ -3,7 +3,7 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 aws cloudformation create-stack \
-      --stack-name $stack \
+      --stack-name $PROJECT_NAME \
       --parameters ParameterKey=GithubToken,ParameterValue=$GITHUB_TOKEN \
                    ParameterKey=ProjectName,ParameterValue=$PROJECT_NAME \
       --template-body file://$DIR/resources.yaml \
