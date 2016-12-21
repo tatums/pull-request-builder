@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "aws:fn-deploy": "zip -q -r package.zip * && aws lambda update-function-code --function-name 'pull-request-builder' --zip-file 'fileb://package.zip'",
+    "deploy": "zip -q -r package.zip * && aws lambda update-function-code --function-name $PROJECT_NAME --zip-file 'fileb://package.zip'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

@@ -20,6 +20,7 @@ github AWS SNS integration.
 #### ENV Varialbes
 
 ```
+$ export GITHUB_PROJECT_NAME='tatums/hello-world'
 $ export GITHUB_TOKEN='1234567890'
 $ export PROJECT_NAME='foo-bar'
 ```
