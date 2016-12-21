@@ -28,8 +28,7 @@ $ export PROJECT_NAME='foo-bar'
 
 This relies on the [aws cli](https://aws.amazon.com/cli/). Make sure you're setup
 
-#### Setup resources
-
+#### [Setup resources](./resources/README.md)
 ```bash
 $ ./resources/create
 ```
