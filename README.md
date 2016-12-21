@@ -46,7 +46,9 @@ $ cd lambda
 $ npm install && npm run deploy
 ```
 
-### in your project you'll need to setup a `buildspec.yml` file.
+### Your project will need to setup a `buildspec.yml` file.
+
+[CodeBuild buildspec docs](http://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html)
 
 Notice that you'll need to trigger a SNS call in the post_build step.
 
