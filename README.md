@@ -25,7 +25,7 @@ $ export PROJECT_NAME='foo-bar'
 ```
 #### AWS Cli
 
-This relies on the aws cli.
+This relies on the [aws cli](https://aws.amazon.com/cli/). Make sure you're setup
 
 #### Setup resources
 
@@ -43,7 +43,7 @@ This will create the following resources in AWS
 ### Deploy the lambda
 ```
 $ cd lambda
-$ npm install && npm run aws:fn-deplo
+$ npm install && npm run deploy
 ```
 
 ### in your project you'll need to setup a `buildspec.yml` file.
