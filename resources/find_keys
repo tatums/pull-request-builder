@@ -9,4 +9,4 @@ secret=$(aws cloudformation describe-stacks --stack-name pull-request-builder --
 echo "SecretAccessKey: ${secret}"
 
 arn=$(aws cloudformation describe-stacks --stack-name pull-request-builder --query 'Stacks[0].Outputs[?OutputKey==`SNSTopic`] | [0].OutputValue' --output json | xargs echo)
-echo "SNS_Topic_ARN: ${arn}"
+echo "SNSTopic: ${arn}"

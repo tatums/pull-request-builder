@@ -46,7 +46,15 @@ $ cd lambda
 $ npm install && npm run deploy
 ```
 
-### Your project will need to setup a `buildspec.yml` file.
+
+### Setup Github's Amazon SNS integration
+In the github project, setup the service/integration `Amazon SNS` and provide the required info.
+
+You can pull the info using a script `$ ./resources/find_keys`
+
+![github setup](./gh-setup.png "Github integration setup")
+
+### in your project you'll need to setup a `buildspec.yml` file.
 
 [CodeBuild buildspec docs](http://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html)
 
