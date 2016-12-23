@@ -70,8 +70,8 @@ Resources:
   ReCodeBuildProject:
     Type: AWS::CodeBuild::Project
     Properties:
-      Name: pull-request-builder
-      Description: pull request buidler
+      Name: !Sub ${AWS::StackName}
+      Description: !Sub ${AWS::StackName
       ServiceRole: !GetAtt ReCodeBuildRole.Arn
       Artifacts:
         Type: no_artifacts
