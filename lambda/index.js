@@ -7,6 +7,8 @@ exports.handler = (event, context, callback) => {
 
   const message = JSON.parse(event.Records[0].Sns.Message)
 
+  console.log("\n\n", message, "\n\n");
+
   if (message && message.after) {
 
     console.log('\n\n ====== BUILDING ======= \n\n')

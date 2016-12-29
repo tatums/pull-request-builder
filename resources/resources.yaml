@@ -6,6 +6,9 @@ Parameters:
   GithubToken:
     Description: Github api token
     Type: String
+  GithubProjectName:
+    Description: Github Project Name
+    Type: String
   ProjectName:
     Description: Project name
     Type: String
@@ -130,6 +133,8 @@ Resources:
           exports.handler = function(event, context, cb) { return cb(null, {message:'Hello World'}); };
       Environment:
         Variables:
+          GITHUB_PROJECT_NAME:
+            Ref: GithubProjectName
           GITHUB_TOKEN:
             Ref: GithubToken
           PROJECT_NAME:

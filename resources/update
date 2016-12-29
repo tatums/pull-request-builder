@@ -4,7 +4,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 aws cloudformation update-stack \
       --stack-name $PROJECT_NAME \
-      --parameters ParameterKey=GithubToken,ParameterValue=$GITHUB_TOKEN \
+      --parameters ParameterKey=GithubProjectName,ParameterValue=$GITHUB_PROJECT_NAME \
+                   ParameterKey=GithubToken,ParameterValue=$GITHUB_TOKEN \
                    ParameterKey=ProjectName,ParameterValue=$PROJECT_NAME \
       --template-body file://$DIR/resources.yaml \
       --capabilities CAPABILITY_IAM \
