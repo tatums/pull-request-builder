@@ -74,7 +74,7 @@ Resources:
     Type: AWS::CodeBuild::Project
     Properties:
       Name: !Sub ${AWS::StackName}
-      Description: !Sub ${AWS::StackName
+      Description: !Sub ${AWS::StackName}
       ServiceRole: !GetAtt ReCodeBuildRole.Arn
       Artifacts:
         Type: no_artifacts
